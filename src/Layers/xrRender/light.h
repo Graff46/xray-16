@@ -122,6 +122,7 @@ public:
     virtual bool get_hud_mode() { return flags.bHudMode; };
     virtual void spatial_move();
     virtual Fvector spatial_sector_point();
+    virtual void set_attenuation_params2(float a0, float a1, float a2, float fo);
 
     virtual IRender_Light* dcast_Light() { return this; }
     vis_data& get_homdata();

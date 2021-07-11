@@ -398,6 +398,14 @@ void light::set_attenuation_params(float a0, float a1, float a2, float fo)
     falloff = fo;
 }
 
+void light::set_attenuation_params2(float a0, float a1, float a2, float fo) 
+{ 
+    if (RENDER != R_R1)
+    {
+        set_attenuation_params(a0, a1, a2, fo);
+    }
+}
+
 #endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4) || (RENDER==R_GL)
 
 extern float r_ssaGLOD_start, r_ssaGLOD_end;

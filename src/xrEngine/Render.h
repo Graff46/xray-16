@@ -62,6 +62,7 @@ public:
     virtual void set_color(float r, float g, float b) = 0;
     virtual void set_hud_mode(bool b) = 0;
     virtual bool get_hud_mode() = 0;
+    virtual void set_attenuation_params2(float a0, float a1, float a2, float fo) = 0;
     virtual ~IRender_Light();
 };
 struct ENGINE_API resptrcode_light : public resptr_base<IRender_Light>

@@ -10,7 +10,6 @@
 #include "game_object_space.h"
 #include "xrScriptEngine/script_callback_ex.h"
 #include "script_game_object.h"
-#include "xrScriptEngine/ScriptExporter.hpp"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -157,6 +156,11 @@ bool CHangingLamp::net_Spawn(CSE_Abstract* DC)
     setEnabled((BOOL) !!CForm);
 
     return (TRUE);
+}
+
+void CHangingLamp::set_attenuation(float a0, float a1, float a2, float fo)
+{ 
+    light_render->set_attenuation_params2(a0, a1, a2, fo);
 }
 
 void CHangingLamp::SpawnInitPhysics(CSE_Abstract* D)
@@ -410,5 +414,7 @@ SCRIPT_EXPORT(CHangingLamp, (CGameObject), {
     luabind::module(luaState)[luabind::class_<CHangingLamp, CGameObject>("hanging_lamp")
                                   .def(luabind::constructor<>())
                                   .def("turn_on", &CHangingLamp::TurnOn)
-                                  .def("turn_off", &CHangingLamp::TurnOff)];
+                                  .def("turn_off", &CHangingLamp::TurnOff)
+                                  .def("set_attenuation_params", &CHangingLamp::set_attenuation)
+    ];
 });
