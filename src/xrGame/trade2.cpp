@@ -121,8 +121,10 @@ void CTrade::TransferItem(CInventoryItem* pItem, bool bBuying, bool bFree /*= fa
     if ((pPartner.type == TT_ACTOR) || (pThis.type == TT_ACTOR))
     {
         bool bDir = (pThis.type != TT_ACTOR) && bBuying;
-        Actor()->callback(GameObject::eTradeSellBuyItem)(pItem->object().lua_game_object(), bDir, dwTransferMoney,
-            (pThis.type == TT_ACTOR ? pPartner.inv_owner->cast_game_object() : pThis.inv_owner->cast_game_object())->lua_game_object());
+        Actor()->callback(GameObject::eTradeSellBuyItem)(
+            pItem->object().lua_game_object(), bDir, dwTransferMoney,
+            (pThis.type == TT_ACTOR ? pPartner.inv_owner->cast_game_object() : pThis.inv_owner->cast_game_object())->lua_game_object()
+            );
     }
 }
 
