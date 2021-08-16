@@ -403,6 +403,12 @@ void CHangingLamp::CreateBody(CSE_ALifeObjectHangingLamp* lamp)
     ApplySpawnIniToPhysicShell(&lamp->spawn_ini(), m_pPhysicsShell, fixed_bones[0] != '\0');
 }
 
+void CHangingLamp::setAttenuationParams(float a0, float a1, float a2, float fo)
+{
+    if (Alive() && light_render->get_active())
+        light_render->set_attenuation_params(a0, a1, a2, fo);
+}
+
 void CHangingLamp::net_Export(NET_Packet& P) { VERIFY(Local()); }
 void CHangingLamp::net_Import(NET_Packet& P) { VERIFY(Remote()); }
 bool CHangingLamp::UsedAI_Locations() { return (FALSE); }
@@ -410,5 +416,7 @@ SCRIPT_EXPORT(CHangingLamp, (CGameObject), {
     luabind::module(luaState)[luabind::class_<CHangingLamp, CGameObject>("hanging_lamp")
                                   .def(luabind::constructor<>())
                                   .def("turn_on", &CHangingLamp::TurnOn)
-                                  .def("turn_off", &CHangingLamp::TurnOff)];
+                                  .def("turn_off", &CHangingLamp::TurnOff)
+                                  .def("set_attenuation", &CHangingLamp::setAttenuationParams)
+    ];
 });

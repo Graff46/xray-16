@@ -65,6 +65,7 @@ public:
 
     virtual void Center(Fvector& C) const;
     virtual float Radius() const;
+    void setAttenuationParams(float a0, float a1, float a2, float fo);
 };
 
 #endif // HangingLampH

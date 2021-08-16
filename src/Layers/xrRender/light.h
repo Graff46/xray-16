@@ -37,12 +37,12 @@ public:
     float m_volumetric_intensity;
     float m_volumetric_distance;
 
-#if (RENDER == R_R2) || (RENDER == R_R3) || (RENDER == R_R4) || (RENDER == R_GL)
     float falloff; // precalc to make light equal to zero at light range
     float attenuation0; // Constant attenuation
     float attenuation1; // Linear attenuation
     float attenuation2; // Quadratic attenuation
 
+#if (RENDER == R_R2) || (RENDER == R_R3) || (RENDER == R_R4) || (RENDER == R_GL)
     light* omnipart[6];
     xr_vector<light_indirect> indirect;
     u32 indirect_photons;
@@ -122,6 +122,13 @@ public:
     virtual bool get_hud_mode() { return flags.bHudMode; };
     virtual void spatial_move();
     virtual Fvector spatial_sector_point();
+    virtual void set_attenuation_params(float a0, float a1, float a2, float fo)
+    {
+        attenuation0 = a0;
+        attenuation1 = a1;
+        attenuation2 = a2;
+        falloff = fo;
+    };
 
     virtual IRender_Light* dcast_Light() { return this; }
     vis_data& get_homdata();
@@ -131,7 +138,6 @@ public:
     void vis_prepare();
     void vis_update();
     void Export(light_Package& dest);
-    void set_attenuation_params(float a0, float a1, float a2, float fo);
 #endif // (RENDER==R_R2) || (RENDER==R_R3) || (RENDER==R_R4) || (RENDER==R_GL)
 
     float get_LOD();
