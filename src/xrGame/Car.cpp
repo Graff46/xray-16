@@ -156,14 +156,29 @@ bool CCar::net_Spawn(CSE_Abstract* DC)
 #ifdef DEBUG
     InitDebug();
 #endif
+    BOOL R = inherited::net_Spawn(DC);
+    if (!R)
+        return FALSE;
+
     CSE_Abstract* e = (CSE_Abstract*)(DC);
     CSE_ALifeCar* co = smart_cast<CSE_ALifeCar*>(e);
-    BOOL R = inherited::net_Spawn(DC);
 
     PKinematics(Visual())->CalculateBones_Invalidate();
     PKinematics(Visual())->CalculateBones(TRUE);
 
+    CSE_ALifeCar* car = smart_cast<CSE_ALifeCar*>(e);
+
     CPHSkeleton::Spawn(e);
+
+    IKinematics* K = smart_cast<IKinematics*>(Visual());
+    IKinematicsAnimated* A = smart_cast<IKinematicsAnimated*>(Visual());
+    if (A)
+    {
+        if (car->startup_animation.size())
+            A->PlayCycle(*car->startup_animation);
+        K->CalculateBones(TRUE);
+    }
+    
     setEnabled(TRUE);
     setVisible(TRUE);
     PKinematics(Visual())->CalculateBones_Invalidate();
@@ -174,8 +189,11 @@ bool CCar::net_Spawn(CSE_Abstract* DC)
     if (!g_Alive())
         b_exploded = true;
     else
+    {
         b_exploded = false;
-
+        processing_activate();
+    }
+        
     CDamagableItem::RestoreEffect();
 
     CInifile* pUserData = PKinematics(Visual())->LL_UserData();
@@ -218,6 +236,8 @@ void CCar::SpawnInitPhysics(CSE_Abstract* D)
     // PPhysicsShell()->add_ObjectContactCallback(ActorObstacleCallback);
     SetDefaultNetState(so);
     CPHUpdateObject::Activate();
+
+    m_pPhysicsShell->applyImpulse(Fvector().set(0.f, -1.f, 0.f), 0.1f);
 }
 
 void CCar::net_Destroy()
@@ -233,12 +253,6 @@ void CCar::net_Destroy()
     CScriptEntity::net_Destroy();
     inherited::net_Destroy();
     CExplosive::net_Destroy();
-    if (m_pPhysicsShell)
-    {
-        m_pPhysicsShell->Deactivate();
-        m_pPhysicsShell->ZeroCallbacks();
-        xr_delete(m_pPhysicsShell);
-    }
     CHolderCustom::detach_Actor();
     ClearExhausts();
     m_wheels_map.clear();
@@ -254,6 +268,12 @@ void CCar::net_Destroy()
     m_damage_particles.Clear();
     CPHDestroyable::RespawnInit();
     CPHCollisionDamageReceiver::Clear();
+    if (m_pPhysicsShell)
+    {
+        m_pPhysicsShell->Deactivate();
+        m_pPhysicsShell->ZeroCallbacks();
+        xr_delete(m_pPhysicsShell);
+    }
     b_breaks = false;
 }
 
@@ -453,6 +473,8 @@ void CCar::VisualUpdate(float fov)
         if (m_pPhysicsShell->isEnabled())
         {
             Owner()->XFORM().mul_43(XFORM(), m_sits_transforms[0]);
+            IKinematics* K = smart_cast<IKinematics*>(Visual());
+            K->CalculateBones();
         }
         //
         // 		if(OwnerActor() && OwnerActor()->IsMyCamera())
@@ -614,6 +636,10 @@ void CCar::detach_Actor()
 #ifdef DEBUG
     DBgClearPlots();
 #endif
+    if (m_car_weapon)
+    {
+        Action(CCarWeapon::eWpnActivate, 0);
+    };
 }
 
 bool CCar::attach_Actor(CGameObject* actor)
@@ -640,6 +666,10 @@ bool CCar::attach_Actor(CGameObject* actor)
     //	VisualUpdate();
     processing_activate();
     ReleaseHandBreak();
+    if (m_car_weapon)
+    {
+        Action(CCarWeapon::eWpnActivate, 1);
+    };
     //	CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(true);
     //	CurrentGameUI()->UIMainIngameWnd->CarPanel().SetCarHealth(fEntityHealth/100.f);
     // CurrentGameUI()->UIMainIngameWnd.ShowBattery(true);
