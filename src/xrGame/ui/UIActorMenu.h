@@ -253,6 +253,10 @@ public:
 
 protected:
     CUIDragDropListEx* GetSlotList(u16 slot_idx);
+	
+	//-> i-love-kfc: Ограничение объема из Unexplored Land
+	CUIDragDropListEx*			m_pDeadBodyBagList;
+	
     bool CanSetItemToList(PIItem item, CUIDragDropListEx* l, u16& ret_slot);
 
     xr_vector<EDDListType> m_allowed_drops[iListTypeMax];

@@ -36,6 +36,10 @@ public:
     IC bool can_take() const { return m_can_take; }
     void set_closed(bool status, LPCSTR reason);
     IC bool closed() const { return m_closed; }
+	
+	//-> i-love-kfc: Ограничение объема из Unexplored Land
+	IC			u8		get_box_capacity_x				() const { return box_cells_x; }
+	IC			u8		get_box_capacity_y				() const { return box_cells_y; }
 protected:
     void SE_update_status();
 };

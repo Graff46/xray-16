@@ -52,6 +52,10 @@ bool move_item_check(PIItem itm, CInventoryOwner* from, CInventoryOwner* to, boo
 void CUIActorMenu::InitDeadBodySearchMode()
 {
     ShowIfExist(m_pSearchLootWnd, true);
+	
+	//-> i-love-kfc: Ограничение объема из Unexplored Land
+	m_pDeadBodyBagList->Show		(true);
+	
     m_pLists[eSearchLootBagList]->Show(true);
     m_pLists[eSearchLootActorBagList]->Show(true);
     ShowIfExist(m_LeftBackground, true);
@@ -67,12 +71,22 @@ void CUIActorMenu::InitDeadBodySearchMode()
     {
         m_pPartnerInvOwner->inventory().AddAvailableItems(items_list, false); // true
         UpdatePartnerBag();
+		
+		//-> i-love-kfc: Ограничение объема из Unexplored Land
+		Ivector2 c;
+		c.x = 7; c.y = 14;
+		m_pDeadBodyBagList->SetCellsCapacity(c);
     }
     else
     {
         VERIFY(m_pInvBox);
         m_pInvBox->set_in_use(true);
         m_pInvBox->AddAvailableItems(items_list);
+		
+		//-> i-love-kfc: Ограничение объема из Unexplored Land
+		Ivector2 c;
+		c.x = m_pInvBox->get_box_capacity_x(); c.y = m_pInvBox->get_box_capacity_y();
+		m_pDeadBodyBagList->SetCellsCapacity(c);
     }
 
     std::sort(items_list.begin(), items_list.end(), InventoryUtilities::GreaterRoomInRuck);
