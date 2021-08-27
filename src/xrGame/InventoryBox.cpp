@@ -15,6 +15,10 @@ CInventoryBox::CInventoryBox()
     m_in_use = false;
     m_can_take = true;
     m_closed = false;
+	
+	//-> i-love-kfc: Ограничение объема из Unexplored Land
+	box_cells_x = 7;
+	box_cells_y = 7;
 }
 
 CInventoryBox::~CInventoryBox() {}
@@ -87,11 +91,18 @@ bool CInventoryBox::net_Spawn(CSE_Abstract* DC)
     set_tip_text("inventory_box_use");
 
     CSE_ALifeInventoryBox* pSE_box = smart_cast<CSE_ALifeInventoryBox*>(DC);
-    if (/*IsGameTypeSingle() &&*/ pSE_box)
+    if (pSE_box)
     {
         m_can_take = pSE_box->m_can_take;
         m_closed = pSE_box->m_closed;
         set_tip_text(pSE_box->m_tip_text.c_str());
+	
+		//-> i-love-kfc: Ограничение объема из Unexplored Land
+		string_path ini_path;
+		FS.update_path(ini_path, CONFIG_PATH, "system.ltx");
+		CInifile* ini = xr_new<CInifile>(ini_path);
+		box_cells_x = ini->r_u8(pSE_box->name(),"box_capacity_x");
+		box_cells_y = ini->r_u8(pSE_box->name(),"box_capacity_y");
     }
 
     return TRUE;

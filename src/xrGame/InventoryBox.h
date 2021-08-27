@@ -13,6 +13,10 @@ protected:
     bool m_in_use;
     bool m_can_take;
     bool m_closed;
+	
+	//-> i-love-kfc: Ограничение объема из Unexplored Land
+	u8 box_cells_x;
+	u8 box_cells_y;
 
 public:
     CInventoryBox();
