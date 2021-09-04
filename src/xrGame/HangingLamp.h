@@ -33,6 +33,7 @@ private:
 
     float fHealth;
     float fBrightness;
+    float KRRange;
     void CreateBody(CSE_ALifeObjectHangingLamp* lamp);
     void Init();
     void RespawnInit();
@@ -62,6 +63,7 @@ public:
     virtual void net_Export(NET_Packet& P);
     virtual void net_Import(NET_Packet& P);
     virtual bool UsedAI_Locations();
+    float lightRange(float koef);
 
     virtual void Center(Fvector& C) const;
     virtual float Radius() const;

@@ -29,6 +29,7 @@ void CHangingLamp::Init()
     light_ambient = 0;
     glow_render = 0;
     m_bState = 1;
+    KRRange = 1.0;
 }
 
 void CHangingLamp::RespawnInit()
@@ -99,7 +100,7 @@ bool CHangingLamp::net_Spawn(CSE_Abstract* DC)
     light_render->set_volumetric(!!lamp->flags.is(CSE_ALifeObjectHangingLamp::flVolumetric));
     light_render->set_type(
         lamp->flags.is(CSE_ALifeObjectHangingLamp::flTypeSpot) ? IRender_Light::SPOT : IRender_Light::POINT);
-    light_render->set_range((lamp->range) * 2);
+    light_render->set_range(lamp->range * KRRange);
     light_render->set_virtual_size(lamp->m_virtual_size);
     light_render->set_color(clr);
     light_render->set_cone(lamp->spot_cone_angle);
@@ -117,7 +118,7 @@ bool CHangingLamp::net_Spawn(CSE_Abstract* DC)
         glow_render->set_radius(lamp->glow_radius);
     }
 
-    if (lamp->flags.is(CSE_ALifeObjectHangingLamp::flPointAmbient))
+    if (0)//lamp->flags.is(CSE_ALifeObjectHangingLamp::flPointAmbient))
     {
         ambient_power = lamp->m_ambient_power;
         light_ambient = GEnv.Render->light_create();
@@ -406,9 +407,17 @@ void CHangingLamp::CreateBody(CSE_ALifeObjectHangingLamp* lamp)
 void CHangingLamp::net_Export(NET_Packet& P) { VERIFY(Local()); }
 void CHangingLamp::net_Import(NET_Packet& P) { VERIFY(Remote()); }
 bool CHangingLamp::UsedAI_Locations() { return (FALSE); }
+
+float CHangingLamp::lightRange(float koef)
+{
+    KRRange = koef;
+    return KRRange;
+}
+
 SCRIPT_EXPORT(CHangingLamp, (CGameObject), {
     luabind::module(luaState)[luabind::class_<CHangingLamp, CGameObject>("hanging_lamp")
                                   .def(luabind::constructor<>())
                                   .def("turn_on", &CHangingLamp::TurnOn)
-                                  .def("turn_off", &CHangingLamp::TurnOff)];
+                                  .def("turn_off", &CHangingLamp::TurnOff)
+                                  .def("light_range", &CHangingLamp::lightRange)];
 });
