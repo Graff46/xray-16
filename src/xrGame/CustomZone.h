@@ -242,16 +242,11 @@ protected:
 
     //подсветка idle состояния
     ref_light m_pIdleLight;
-    ref_light light_ambient;
     Fcolor m_IdleLightColor;
     float m_fIdleLightRange;
     float m_fIdleLightRangeDelta;
     float m_fIdleLightHeight;
     CLAItem* m_pIdleLAnim;
-
-    //Ambient light
-    float ambientPower;
-    float ambientRadius;
 
     void StartIdleLight();
     void StopIdleLight();
