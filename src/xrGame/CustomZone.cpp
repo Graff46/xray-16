@@ -51,9 +51,6 @@ CCustomZone::CCustomZone(void)
     m_zone_flags.set(eFastMode, TRUE);
 
     m_eZoneState = eZoneStateIdle;
-
-    ambientPower = 0.75;
-    ambientRadius = 2.f;
 }
 
 CCustomZone::~CCustomZone(void)
@@ -278,13 +275,6 @@ void CCustomZone::Load(LPCSTR section)
         m_zone_flags.set(eIdleLightVolumetric, pSettings->r_bool(section, "idle_light_volumetric"));
         m_zone_flags.set(eIdleLightShadow, pSettings->r_bool(section, "idle_light_shadow"));
         m_zone_flags.set(eIdleLightR1, pSettings->r_bool(section, "idle_light_r1"));
-
-        m_zone_flags.set(eAmbient, pSettings->read_if_exists<bool>(section, "idle_ambient", false));
-        if (m_zone_flags.test(eAmbient))
-        {
-            ambientPower = pSettings->r_float(section, "idle_ambient_power");
-            ambientRadius = pSettings->r_float(section, "idle_ambient_radius");
-        }
     }
 
     bool use = !!READ_IF_EXISTS(pSettings, r_bool, section, "use_secondary_hit", false);
@@ -332,24 +322,12 @@ bool CCustomZone::net_Spawn(CSE_Abstract* DC)
 
         if (m_zone_flags.test(eIdleLightVolumetric))
         {
-            //m_pIdleLight->set_type				(IRender_Light::SPOT);
+            // m_pIdleLight->set_type				(IRender_Light::SPOT);
             m_pIdleLight->set_volumetric(true);
         }
-
-        if (m_zone_flags.test(eAmbient))
-        {
-            light_ambient = GEnv.Render->light_create();
-            light_ambient->set_type(IRender_Light::POINT);
-            light_ambient->set_shadow(false);
-            //ambientPower;
-            light_ambient->set_range(ambientRadius);
-            light_ambient->set_color(m_IdleLightColor);
-            light_ambient->set_texture(nullptr);
-        }
-        
     }
     else
-        light_ambient = m_pIdleLight = NULL;
+        m_pIdleLight = NULL;
 
     if (m_zone_flags.test(eBlowoutLight))
     {
@@ -385,7 +363,6 @@ void CCustomZone::net_Destroy()
 
     m_pLight.destroy();
     m_pIdleLight.destroy();
-    light_ambient.destroy();
 
     CParticlesObject::Destroy(m_pIdleParticles);
 
@@ -711,23 +688,12 @@ void CCustomZone::StartIdleLight()
         pos.y += m_fIdleLightHeight;
         m_pIdleLight->set_position(pos);
         m_pIdleLight->set_active(true);
-
-        if (light_ambient)
-        {
-            light_ambient->set_position(pos);
-            light_ambient->set_active(true);
-        }
-    }     
+    }
 }
-
 void CCustomZone::StopIdleLight()
 {
     if (m_pIdleLight)
         m_pIdleLight->set_active(false);
-
-    if (light_ambient)
-        light_ambient->set_active(false);
-
 }
 
 void CCustomZone::UpdateIdleLight()
@@ -740,23 +706,15 @@ void CCustomZone::UpdateIdleLight()
     int frame = 0;
     u32 clr = m_pIdleLAnim->CalculateBGR(Device.fTimeGlobal, frame); // возвращает в формате BGR
     Fcolor fclr;
+    fclr.set((float)color_get_B(clr) / 255.f, (float)color_get_G(clr) / 255.f, (float)color_get_R(clr) / 255.f, 1.f);
 
-    m_IdleLightColor.set((float)color_get_B(clr) / 255.f, (float)color_get_G(clr) / 255.f, (float)color_get_R(clr) / 255.f, 1.f);
-
-    m_pIdleLight->set_range(m_fIdleLightRange + 0.5f * ::Random.randF(-1.f, 1.f));
-    m_pIdleLight->set_color(m_IdleLightColor);
+    float range = m_fIdleLightRange + 0.25f * ::Random.randF(-1.f, 1.f);
+    m_pIdleLight->set_range(range);
+    m_pIdleLight->set_color(fclr);
 
     Fvector pos = Position();
     pos.y += m_fIdleLightHeight;
     m_pIdleLight->set_position(pos);
-
-    if (light_ambient)
-    {
-        m_IdleLightColor.mul_rgb(ambientPower);
-        light_ambient->set_color(m_IdleLightColor);
-        light_ambient->set_range(ambientRadius + 0.3f * ::Random.randF(-1.f, 1.f));
-        light_ambient->set_position(pos);
-    }
 }
 
 void CCustomZone::PlayBlowoutParticles()
@@ -1114,11 +1072,7 @@ void CCustomZone::OnMove()
             m_pLight->set_position(Position());
 
         if (m_pIdleLight && m_pIdleLight->get_active())
-        {
             m_pIdleLight->set_position(Position());
-            if (light_ambient)
-                light_ambient->set_position(Position());
-        }
     }
 }
 

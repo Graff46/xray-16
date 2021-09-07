@@ -107,7 +107,6 @@ protected:
         eBoltEntranceParticles = (1 << 16),
         eUseSecondaryHit = (1 << 17),
         eVisibleByDetector = (1 << 18),
-        eAmbient           = (1 << 19),
     };
 
     u32 m_owner_id;
@@ -239,15 +238,10 @@ protected:
 
     //подсветка idle состояния
     ref_light m_pIdleLight;
-    ref_light light_ambient;
     Fcolor m_IdleLightColor;
     float m_fIdleLightRange;
     float m_fIdleLightHeight;
     CLAItem* m_pIdleLAnim;
-
-    //Ambient light
-    float ambientPower;
-    float ambientRadius;
 
     void StartIdleLight();
     void StopIdleLight();
