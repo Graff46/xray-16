@@ -332,6 +332,7 @@ void CCustomZone::Load(LPCSTR section)
     {
         m_fIdleLightRange = pSettings->r_float(section, "idle_light_range");
         m_fIdleLightRangeDelta = pSettings->read_if_exists<float>(section, "idle_light_range_delta", 0.25f);
+        m_fIdleLightRange = m_fIdleLightRange * m_fIdleLightRangeDelta;
         LPCSTR light_anim = pSettings->r_string(section, "idle_light_anim");
         m_pIdleLAnim = LALib.FindItem(light_anim);
         m_fIdleLightHeight = pSettings->r_float(section, "idle_light_height");
