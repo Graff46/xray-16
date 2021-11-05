@@ -385,6 +385,8 @@ private:
     CCameraBase* active_camera;
 
     Fvector m_camera_position;
+    Fvector m_camera_position2;
+    Fvector m_camera_current_position;
 
     ////////////////////////////////////////////////////
     friend struct SWheel;
