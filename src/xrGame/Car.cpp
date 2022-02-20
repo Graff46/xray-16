@@ -755,7 +755,6 @@ void CCar::ParseDefinitions()
     // CExplosive::SetInitiator(ID());
     m_camera_position = m_camera_current_position = ini->r_fvector3("car_definition", "camera_pos");
     m_camera_position2 = READ_IF_EXISTS(ini, r_fvector3, "car_definition", "camera_pos2", m_camera_position);
-    // r_fvector3("car_definition", "camera_pos2");
     ///////////////////////////car definition///////////////////////////////////////////////////
     fill_wheel_vector(ini->r_string("car_definition", "driving_wheels"), m_driving_wheels);
     fill_wheel_vector(ini->r_string("car_definition", "steering_wheels"), m_steering_wheels);
@@ -1165,24 +1164,24 @@ void CCar::StopBreaking()
 }
 void CCar::PressRight()
 {
-    if (lsp)
-    {
-        if (!fwp)
-            Steer(0.0f);
-    }
-    else
-        Steer(1.0f);
+    //if (lsp)
+    //{
+    //    if (!fwp)
+    //        SteerIdle();
+    //}
+    //else
+    SteerRight();
     rsp = true;
 }
 void CCar::PressLeft()
 {
-    if (rsp)
-    {
-        if (!fwp)
-            Steer(0.0f);
-    }
-    else
-        Steer(-1.0f);
+   //if (rsp)
+   //{
+   //    if (!fwp)
+   //        SteerIdle();
+   //}
+   //else
+    SteerLeft();
     lsp = true;
 }
 void CCar::PressForward()
