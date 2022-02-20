@@ -160,9 +160,16 @@ void CSpaceRestrictionComposition::test_correctness()
     {
         RESTRICTIONS::iterator I = m_restrictions.begin();
         RESTRICTIONS::iterator E = m_restrictions.end();
+        bool cond = true;
         for (; I != E; ++I)
         {
-            VERIFY3(!(*I)->object().m_test_storage.empty(), "Restrictor has no border", *(*I)->object().name());
+            cond = !(*I)->object().m_test_storage.empty();
+            VERIFY3(cond, "Restrictor has no border", *(*I)->object().name());
+            if (!cond)
+            {
+                m_correct = false;
+                break;
+            }
             nodes.clear();
             ai().level_graph().set_mask(border());
             ai().graph_engine().search(ai().level_graph(), (*I)->object().m_test_storage.back(),
