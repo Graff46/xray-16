@@ -574,6 +574,10 @@ void CUIMiniMap::Init_internal(const shared_str& name, const CInifile& pLtx, con
 {
     inherited::Init_internal(name, pLtx, sect_name, sh_name);
     CUIStatic::SetTextureColor(0x7fffffff);
+
+    PCSTR texture = READ_IF_EXISTS(pSettingsOpenXRay, r_string, "compatibility", "minimap_texure", nullptr);
+    if (texture)
+        CUIStatic::InitTextureEx(texture);
 }
 
 void CUIMiniMap::UpdateSpots()
