@@ -160,7 +160,6 @@ void CSpaceRestrictionComposition::test_correctness()
                 m_correct = false;
                 break;
             }
-
             nodes.clear();
             ai().level_graph().set_mask(border());
             ai().graph_engine().search(ai().level_graph(), restriction->object().m_test_storage.back(),
