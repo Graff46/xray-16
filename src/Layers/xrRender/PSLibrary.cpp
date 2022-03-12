@@ -24,19 +24,9 @@ void CPSLibrary::OnCreate()
     else
 #endif
     {
-        
         string_path fn;
-        
         FS.update_path(fn, _game_data_, "particles.xr");
         Load(fn);
-
-        u8 i = 1;
-        string16 tmp = "particles1.xr";
-        while (FS.exist(fn, _game_data_, tmp))
-        {
-            Load(fn);
-            snprintf(tmp, sizeof(tmp),"particles%u.xr", ++i);
-        }
     }
 }
 
