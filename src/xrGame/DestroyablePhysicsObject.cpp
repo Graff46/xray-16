@@ -82,7 +82,7 @@ void CDestroyablePhysicsObject::Hit(SHit* pHDS)
     IGameObject* who = HDS.who;
     callback(GameObject::eHit)(lua_game_object(), HDS.power, HDS.dir, who->lua_game_object(), HDS.bone());
 
-    if (!hit_object_name.empty() && std::find(hit_object_name.begin(), hit_object_name.end(), who->Name()) == hit_object_name.end())
+    if ((!hit_object_name.empty()) && (std::find(hit_object_name.begin(), hit_object_name.end(), who->Name()) == hit_object_name.end()))
         return;
 
     HDS.power = CHitImmunity::AffectHit(HDS.power, HDS.hit_type);
