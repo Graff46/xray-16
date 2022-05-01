@@ -41,6 +41,8 @@ CInventoryOwner::CInventoryOwner()
 {
     EnableTalk();
     EnableTrade();
+    
+    is_mechanic = false;
 }
 
 IFactoryObject* CInventoryOwner::_construct()

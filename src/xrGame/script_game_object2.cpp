@@ -620,3 +620,7 @@ void CScriptGameObject::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)
 
 void CScriptGameObject::set_visual_name(pcstr visual) { object().cNameVisual_set(visual); }
 pcstr CScriptGameObject::get_visual_name() const { return object().cNameVisual().c_str(); }
+void CScriptGameObject::set_mechanic(bool cond) 
+{ 
+    ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic = cond;
+}
