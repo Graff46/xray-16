@@ -145,6 +145,8 @@ bool CInventoryOwner::net_Spawn(CSE_Abstract* DC)
     if (!pThis->Local())
         return TRUE;
 
+    is_mechanic = pSettings->read_if_exists<bool>(cast_game_object()->cNameSect(), "mechanic", false);
+
     return TRUE;
 }
 
