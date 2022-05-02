@@ -561,3 +561,8 @@ bool CScriptGameObject::is_there_items_to_pickup() const
     }
     return (!!stalker->memory().item().selected());
 }
+
+void CScriptGameObject::set_mechanic(bool cond) 
+{ 
+    ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic = cond;
+}
