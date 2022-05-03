@@ -566,3 +566,8 @@ void CScriptGameObject::set_mechanic(bool cond)
 { 
     ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic = cond;
 }
+
+bool CScriptGameObject::get_mechanic()
+{ 
+    return ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic;
+}
