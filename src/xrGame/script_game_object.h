@@ -835,6 +835,7 @@ public:
     void inactualize_game_path();
 
     void set_mechanic(bool cond);
+    bool get_mechanic();
     
     void SetHealthEx(float hp); //AVO
     float GetLuminocityHemi();
