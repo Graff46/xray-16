@@ -83,13 +83,14 @@ bool CUIActorMenu::CanUpgradeItem(PIItem item)
     VERIFY(item && m_pPartnerInvOwner);
     LPCSTR item_name = item->m_section_id.c_str();
     LPCSTR partner = m_pPartnerInvOwner->CharacterInfo().Profile().c_str();
+    LPCSTR section = m_pPartnerInvOwner->cast_game_object()->cNameSect_str();
 
     luabind::functor<bool> funct;
     R_ASSERT2(GEnv.ScriptEngine->functor("inventory_upgrades.can_upgrade_item", funct),
         make_string("Failed to get functor <inventory_upgrades.can_upgrade_item>, item = %s, mechanic = %s", item_name,
-            partner));
+            partner, section));
 
-    return funct(item_name, partner);
+    return funct(item_name, partner, section);
 }
 
 void CUIActorMenu::CurModeToScript()
