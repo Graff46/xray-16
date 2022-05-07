@@ -1805,6 +1805,12 @@ CSE_ALifeHumanStalker::CSE_ALifeHumanStalker(LPCSTR caSection)
 {
     m_trader_flags.set(eTraderFlagInfiniteAmmo, true);
     m_start_dialog = "";
+
+    mechanic = false;
+    if (pSettings->line_exist(caSection, "mechanic"))
+    {
+        mechanic = pSettings->r_bool(caSection, "mechanic");
+    }
 }
 
 CSE_ALifeHumanStalker::~CSE_ALifeHumanStalker() {}

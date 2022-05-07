@@ -622,10 +622,10 @@ void CScriptGameObject::set_visual_name(pcstr visual) { object().cNameVisual_set
 pcstr CScriptGameObject::get_visual_name() const { return object().cNameVisual().c_str(); }
 void CScriptGameObject::set_mechanic(bool cond) 
 { 
-    ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic = cond;
+    ( smart_cast<CAI_Stalker*>(&object()) )->is_mechanic = cond; 
 }
 
 bool CScriptGameObject::get_mechanic()
 { 
-    return ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic;
+    return ( smart_cast<CAI_Stalker*>(&object()) )->is_mechanic;
 }
