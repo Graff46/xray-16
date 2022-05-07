@@ -72,7 +72,7 @@ void CUITalkWnd::InitTalkDialog()
     Update();
 
     UITalkDialogWnd->mechanic_mode = m_pOthersInvOwner->SpecificCharacter().upgrade_mechanic() ||
-        m_pOthersInvOwner->is_mechanic;
+        (smart_cast<CAI_Stalker*>(m_pOthersInvOwner))->is_mechanic;
     UITalkDialogWnd->SetOsoznanieMode(m_pOthersInvOwner->NeedOsoznanieMode());
     UITalkDialogWnd->Show();
     UITalkDialogWnd->UpdateButtonsLayout(b_disable_break, m_pOthersInvOwner->IsTradeEnabled());

@@ -639,6 +639,7 @@ class CSE_ALifeHumanStalker : public CSE_ALifeHumanAbstract, public CSE_PHSkelet
 
 public:
     shared_str m_start_dialog;
+    bool mechanic;
 
     CSE_ALifeHumanStalker(LPCSTR caSection);
     virtual ~CSE_ALifeHumanStalker();

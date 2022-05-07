@@ -42,5 +42,6 @@ SCRIPT_EXPORT(CSE_ALifeHumanStalker, (CSE_ALifeHumanAbstract, CSE_PHSkeleton),
     module(luaState)
     [
         luabind_class_monster2(CSE_ALifeHumanStalker, "cse_alife_human_stalker", CSE_ALifeHumanAbstract, CSE_PHSkeleton)
+                         .property("mechanic", &CSE_ALifeHumanStalker::mechanic)
     ];
 });

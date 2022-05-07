@@ -811,6 +811,9 @@ public:
 
 private:
     ignored_touched_objects_type m_ignored_touched_objects;
+
+public:
+    bool is_mechanic;
 };
 
 #include "ai_stalker_inline.h"

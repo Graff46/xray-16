@@ -564,10 +564,10 @@ bool CScriptGameObject::is_there_items_to_pickup() const
 
 void CScriptGameObject::set_mechanic(bool cond) 
 { 
-    ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic = cond;
+    ( smart_cast<CAI_Stalker*>(&object()) )->is_mechanic = cond; 
 }
 
 bool CScriptGameObject::get_mechanic()
 { 
-    return ( smart_cast<CInventoryOwner*>(&object()) )->is_mechanic;
+    return ( smart_cast<CAI_Stalker*>(&object()) )->is_mechanic;
 }

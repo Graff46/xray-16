@@ -89,6 +89,8 @@ CAI_Stalker::CAI_Stalker()
     m_dbg_hud_draw = false;
 #endif // DEBUG
     m_registered_in_combat_on_migration = false;
+
+    is_mechanic = false;
 }
 
 CAI_Stalker::~CAI_Stalker()
@@ -181,6 +183,8 @@ void CAI_Stalker::reinit()
     }
 
     m_update_rotation_on_frame = false;
+
+    is_mechanic = pSettings->read_if_exists<bool>(this->cNameSect_str(), "mechanic", false);
 }
 
 void CAI_Stalker::LoadSounds(LPCSTR section)

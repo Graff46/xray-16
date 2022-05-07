@@ -47,7 +47,6 @@ CInventoryOwner::CInventoryOwner()
     m_deadbody_can_take = true;
     m_deadbody_closed = false;
     m_play_show_hide_reload_sounds = true;
-    is_mechanic = false;
 }
 
 IFactoryObject* CInventoryOwner::_construct()
@@ -161,8 +160,6 @@ bool CInventoryOwner::net_Spawn(CSE_Abstract* DC)
 
     if (!pThis->Local())
         return TRUE;
-
-    is_mechanic = pSettings->read_if_exists<bool>(cast_game_object()->cNameSect(), "mechanic", false);
 
     return TRUE;
 }
