@@ -473,7 +473,13 @@ void CInifile::Load(IReader* F, pcstr path, allow_include_func_t allow_include_f
                 // store previous section
                 auto I = std::lower_bound(DATA.begin(), DATA.end(), *Current->Name, sect_pred);
                 if (I != DATA.end() && (*I)->Name == Current->Name)
+#ifdef DEBUG
                     xrDebug::Fatal(DEBUG_INFO, "Duplicate section '%s' found.", *Current->Name);
+#else
+                    Msg("Duplicate section '%s' found.", *Current->Name);
+#endif // DEBUG
+
+                    
                 DATA.insert(I, Current);
             }
             Current = xr_new<Sect>();
