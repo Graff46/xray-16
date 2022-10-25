@@ -235,6 +235,7 @@ public:
     // Actor only
     void SetActorPosition(Fvector pos);
     void SetActorDirection(float dir);
+    void SetActorDirectionV(const Fvector& P);
     void SetNpcPosition(Fvector pos);
     void DisableHitMarks(bool disable);
     bool DisableHitMarks() const;

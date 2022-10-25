@@ -385,6 +385,16 @@ void CScriptGameObject::SetActorDirection(float dir)
             LuaMessageType::Error, "ScriptGameObject : attempt to call SetActorDirection method for non-actor object");
 }
 
+void CScriptGameObject::SetActorDirectionV(const Fvector& P)
+{
+    CActor* actor = smart_cast<CActor*>(&object());
+    if (actor)
+        actor->cam_Active()->Set(-P.getH(), -P.getP(), 0);
+    else
+        GEnv.ScriptEngine->script_log(
+            LuaMessageType::Error, "ScriptGameObject : attempt to call SetActorDirection method for non-actor object");
+}
+
 void CScriptGameObject::DisableHitMarks(bool disable)
 {
     CActor* actor = smart_cast<CActor*>(&object());
