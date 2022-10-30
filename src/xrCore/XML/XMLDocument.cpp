@@ -431,7 +431,7 @@ bool XMLDocument::ReadAttribBool(pcstr path, const size_t index, pcstr attrib, c
 shared_str XMLDocument::ReadAttribSStr(pcstr path, const size_t index, pcstr attrib, const pcstr default_val) const
 {
     pstr result_str = (pstr) ReadAttrib(path, index, attrib, default_val);
-    return shared_str( xr_strlwr(result_str) );
+    return result_str ? shared_str( xr_strlwr(result_str) ) : default_val;
 }
 
 float XMLDocument::ReadAttribFlt(pcstr path, const size_t index, pcstr attrib, const float default_flt_val) const
