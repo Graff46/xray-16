@@ -61,6 +61,40 @@ Frect CUIXmlInitBase::GetFRect(CUIXml& xml_doc, LPCSTR path, int index)
     return rect;
 }
 
+void CUIXmlInitBase::setPosAndSize(CUIXml& xml_doc, CUIWindow* pWnd, LPCSTR path, int index, Fvector2* apos, Fvector2* asize)
+{
+    Fvector2 pos, size;
+
+    pos.x = xml_doc.ReadAttribFlt(path, index, "x");
+    pos.y = xml_doc.ReadAttribFlt(path, index, "y");
+    InitAlignment(xml_doc, path, index, pos.x, pos.y, pWnd);
+    size.x = xml_doc.ReadAttribFlt(path, index, "width");
+    size.y = xml_doc.ReadAttribFlt(path, index, "height");
+
+    shared_str calcType = xml_doc.ReadAttribSStr(path, index, "calc");
+    
+    if (calcType == "percent") {
+        pos.x = 1024 * (pos.x * 0.01);
+        pos.y =  768 * (pos.x * 0.01);
+
+        size.x = 1024 * (size.x * 0.01);
+        size.y =  768 * (size.y * 0.01);
+    } 
+
+    if (calcType == "is_as_wh") {
+        size.x *= 1024.0f / _max((float)Device.dwWidth, 1.0f);
+        size.y *= 768.0f / _max((float)Device.dwHeight, 1.0f);
+    }
+
+    pWnd->SetWndPos(pos);
+    pWnd->SetWndSize(size);
+
+    if (apos && asize) {
+        apos->set(pos);
+        asize->set(size);
+    }
+}
+
 bool CUIXmlInitBase::InitWindow(CUIXml& xml_doc, LPCSTR path, int index, CUIWindow* pWnd, bool fatal /*= true*/)
 {
     const bool nodeExist = xml_doc.NavigateToNode(path, index);
@@ -70,14 +104,15 @@ bool CUIXmlInitBase::InitWindow(CUIXml& xml_doc, LPCSTR path, int index, CUIWind
         return false;
     }
 
-    Fvector2 pos, size;
+    /*Fvector2 pos, size;
     pos.x = xml_doc.ReadAttribFlt(path, index, "x");
     pos.y = xml_doc.ReadAttribFlt(path, index, "y");
     InitAlignment(xml_doc, path, index, pos.x, pos.y, pWnd);
     size.x = xml_doc.ReadAttribFlt(path, index, "width");
     size.y = xml_doc.ReadAttribFlt(path, index, "height");
     pWnd->SetWndPos(pos);
-    pWnd->SetWndSize(size);
+    pWnd->SetWndSize(size);*/
+    setPosAndSize(xml_doc, pWnd, path, index);
 
     string512 buf;
 
@@ -449,14 +484,16 @@ bool CUIXmlInitBase::InitProgressBar(CUIXml& xml_doc, LPCSTR path, int index, CU
     InitAutoStaticGroup(xml_doc, path, index, pWnd);
 
     string256 buf;
-    Fvector2 pos, size;
+    /*Fvector2 pos, size;
     pos.x = xml_doc.ReadAttribFlt(path, index, "x");
     pos.y = xml_doc.ReadAttribFlt(path, index, "y");
 
     InitAlignment(xml_doc, path, index, pos.x, pos.y, pWnd);
 
     size.x = xml_doc.ReadAttribFlt(path, index, "width");
-    size.y = xml_doc.ReadAttribFlt(path, index, "height");
+    size.y = xml_doc.ReadAttribFlt(path, index, "height");*/
+    Fvector2 pos, size;
+    setPosAndSize(xml_doc, pWnd, path, index, &pos, &size);
 
     CUIProgressBar::EOrientMode mode = CUIProgressBar::om_vert;
     int mode_horz = xml_doc.ReadAttribInt(path, index, "horz", 0);
@@ -794,15 +831,17 @@ bool CUIXmlInitBase::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIF
         //.	pWnd->SetStretchTexture( stretch_flag );
     }
 
-    Fvector2 pos, size;
+    /*Fvector2 pos, size;
     pos.x = xml_doc.ReadAttribFlt(path, index, "x");
     pos.y = xml_doc.ReadAttribFlt(path, index, "y");
 
     InitAlignment(xml_doc, path, index, pos.x, pos.y, pWnd);
 
     size.x = xml_doc.ReadAttribFlt(path, index, "width");
-    size.y = xml_doc.ReadAttribFlt(path, index, "height");
+    size.y = xml_doc.ReadAttribFlt(path, index, "height");*/
     bool vertical = !!xml_doc.ReadAttribInt(path, index, "vertical");
+    Fvector2 pos, size;
+    setPosAndSize(xml_doc, pWnd, path, index, &pos, &size);
 
     strconcat(sizeof(buf), buf, path, ":texture");
     shared_str base_name = xml_doc.Read(buf, index, NULL);
@@ -1174,14 +1213,17 @@ bool CUIXmlInitBase::InitListWnd(CUIXml& xml_doc, pcstr path, int index, CUIList
         return false;
     }
 
-    Fvector2 pos, size;
+    /*Fvector2 pos, size;
     pos.x = xml_doc.ReadAttribFlt(path, index, "x");
     pos.y = xml_doc.ReadAttribFlt(path, index, "y");
 
     InitAlignment(xml_doc, path, index, pos.x, pos.y, pWnd);
 
     size.x = xml_doc.ReadAttribFlt(path, index, "width");
-    size.y = xml_doc.ReadAttribFlt(path, index, "height");
+    size.y = xml_doc.ReadAttribFlt(path, index, "height");*/
+    Fvector2 pos, size;
+    setPosAndSize(xml_doc, pWnd, path, index, &pos, &size);
+
     float item_height = xml_doc.ReadAttribFlt(path, index, "item_height");
     int active_background = xml_doc.ReadAttribInt(path, index, "active_bg");
 

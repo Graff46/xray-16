@@ -55,6 +55,9 @@ public:
     int ReadAttribInt(CONST_XML_NODE start_node, pcstr path, const size_t index, pcstr attrib, const int default_int_val = 0) const;
     int ReadAttribInt(CONST_XML_NODE node, pcstr attrib, const int default_int_val) const;
 
+    bool ReadAttribBool(pcstr path, const size_t index, pcstr attrib, const bool default_bool_val = false) const;
+    shared_str ReadAttribSStr(pcstr path, const size_t index, pcstr attrib, const pcstr default_val = nullptr) const;
+
     float ReadAttribFlt(pcstr path, const size_t index, pcstr attrib, const float default_flt_val = 0.0f) const;
     float ReadAttribFlt(CONST_XML_NODE start_node, pcstr path, const size_t index, pcstr attrib, const float default_flt_val = 0.0f) const;
     float ReadAttribFlt(CONST_XML_NODE node, pcstr attrib, const float default_flt_val = 0.0f) const;

@@ -41,6 +41,7 @@ public:
     virtual ~CUIXmlInitBase();
 
     static bool InitWindow(CUIXml& xml_doc, LPCSTR path, int index, CUIWindow* pWnd, bool fatal = true);
+    static void setPosAndSize(CUIXml& xml_doc, CUIWindow* pWnd, LPCSTR path, int index, Fvector2* apos = nullptr, Fvector2* asize = nullptr); 
     static bool InitFrameWindow(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameWindow* pWnd, bool fatal = true);
     static bool InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameLineWnd* pWnd, bool fatal = true);
     static bool InitTextFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUITextFrameLineWnd* pWnd, bool fatal = true);
