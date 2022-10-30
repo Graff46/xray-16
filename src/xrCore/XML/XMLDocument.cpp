@@ -416,6 +416,24 @@ int XMLDocument::ReadAttribInt(CONST_XML_NODE start_node, pcstr path, const size
     return atoi(result_str);
 }
 
+bool XMLDocument::ReadAttribBool(pcstr path, const size_t index, pcstr attrib, const bool default_bool_val) const
+{ 
+    shared_str result_str = ReadAttrib(path, index, attrib, nullptr);
+    
+    if (result_str == nullptr)
+        return default_bool_val;
+    else
+        xr_strlwr(result_str);
+
+    return result_str != "false";
+}
+
+shared_str XMLDocument::ReadAttribSStr(pcstr path, const size_t index, pcstr attrib, const pcstr default_val) const
+{
+    pstr result_str = (pstr) ReadAttrib(path, index, attrib, default_val);
+    return shared_str( xr_strlwr(result_str) );
+}
+
 float XMLDocument::ReadAttribFlt(pcstr path, const size_t index, pcstr attrib, const float default_flt_val) const
 {
     pcstr result_str = ReadAttrib(path, index, attrib, nullptr);
