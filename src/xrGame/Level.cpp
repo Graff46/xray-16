@@ -1044,6 +1044,137 @@ CZoneList* CLevel::create_hud_zones_list()
     return hud_zones_list;
 }
 
+#include "car.h"
+#include "../xrEngine/GameMtlLib.h"
+#include "../xrEngine/IGame_Persistent.h"
+#include "Grenade.h"
+#include "CustomRocket.h"
+ICF static bool GetPickDist_Callback(collide::rq_result& result, LPVOID params)
+{
+    collide::rq_result* RQ = (collide::rq_result*)params;
+    if (result.O)
+    {
+        if (CCustomRocket* pRocket = smart_cast<CCustomRocket*>(result.O))
+        {
+            if (!pRocket->Useful())
+                return TRUE;
+        }
+
+        if (CGrenade* pGrenade = smart_cast<CGrenade*>(result.O))
+        {
+            if (!pGrenade->Useful())
+                return TRUE;
+        }
+
+        if (CMissile* pMissile = smart_cast<CMissile*>(result.O))
+        {
+            if (!pMissile->Useful())
+                return TRUE;
+        }
+
+        if (Actor())
+        {
+            if (result.O == Actor())
+                return TRUE;
+            if (result.O->H_Parent() == Actor())
+                return TRUE;
+            if (Actor()->Holder())
+            {
+                CCar* car = smart_cast<CCar*>(Actor()->Holder());
+                if (car && result.O == car)
+                    return TRUE;
+            }
+        }
+    }
+    else
+    {
+        CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+        SGameMtl* pMtl = GMLib.GetMaterialByIdx(T->material);
+        if (pMtl && (pMtl->Flags.is(SGameMtl::flPassable) || pMtl->Flags.is(SGameMtl::flActorObstacle)))
+            return TRUE;
+    }
+    *RQ = result;
+    return FALSE;
+}
+
+collide::rq_result CLevel::GetPickResult(Fvector pos, Fvector dir, float range, IGameObject* ignore)
+{
+    collide::rq_result RQ;
+    RQ.set(NULL, range, -1);
+    collide::rq_results RQR;
+    collide::ray_defs RD(pos, dir, RQ.range, CDB::OPT_FULL_TEST, collide::rqtBoth);
+    Level().ObjectSpace.RayQuery(RQR, RD, GetPickDist_Callback, &RQ, NULL, ignore);
+    return RQ;
+}
+
+ICF static bool GetPickDistVecIgnores_Callback(collide::rq_result& result, LPVOID params)
+{
+    CLevel::RQandignores* RQI = (CLevel::RQandignores*)params;
+    if (result.O)
+    {
+        if (CCustomRocket* pRocket = smart_cast<CCustomRocket*>(result.O))
+        {
+            if (!pRocket->Useful())
+                return TRUE;
+        }
+
+        if (CGrenade* pGrenade = smart_cast<CGrenade*>(result.O))
+        {
+            if (!pGrenade->Useful())
+                return TRUE;
+        }
+
+        if (CMissile* pMissile = smart_cast<CMissile*>(result.O))
+        {
+            if (!pMissile->Useful())
+                return TRUE;
+        }
+        bool actor_in_vec = false;
+        for (xr_vector<IGameObject*>::iterator it = RQI->ignore_objects.begin(); RQI->ignore_objects.end() != it; ++it)
+        {
+            if ((*it) == result.O)
+                return TRUE;
+            if ((*it) == Actor())
+                actor_in_vec = true;
+        }
+
+        if (Actor() && actor_in_vec)
+        {
+            if (result.O == Actor())
+                return TRUE;
+            if (result.O->H_Parent() == Actor())
+                return TRUE;
+            if (Actor()->Holder())
+            {
+                CCar* car = smart_cast<CCar*>(Actor()->Holder());
+                if (car && result.O == car)
+                    return TRUE;
+            }
+        }
+    }
+    else
+    {
+        CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+        SGameMtl* pMtl = GMLib.GetMaterialByIdx(T->material);
+        if (pMtl && (pMtl->Flags.is(SGameMtl::flPassable) || pMtl->Flags.is(SGameMtl::flActorObstacle)))
+            return TRUE;
+    }
+    RQI->RQ = result;
+    return FALSE;
+}
+
+collide::rq_result CLevel::GetPickResultVecIgnores(
+    Fvector pos, Fvector dir, float range, xr_vector<IGameObject*> ignore_objects)
+{
+    collide::rq_result RQ;
+    RQ.set(NULL, range, -1);
+    collide::rq_results RQR;
+    collide::ray_defs RD(pos, dir, RQ.range, CDB::OPT_FULL_TEST, collide::rqtBoth);
+    RQandignores RQI = RQandignores(ignore_objects, RQ);
+    Level().ObjectSpace.RayQuery(RQR, RD, GetPickDistVecIgnores_Callback, &RQI, NULL, NULL);
+    return RQI.RQ;
+}
+
 bool CZoneList::feel_touch_contact(IGameObject* O)
 {
     TypesMapIt it = m_TypesMap.find(O->cNameSect());
