@@ -392,6 +392,20 @@ public:
     float GetGameDayTimeSec();
     float GetEnvironmentGameDayTimeSec() const override;
 
+    struct RQandignores
+    {
+        xr_vector<IGameObject*> ignore_objects;
+        collide::rq_result RQ;
+        RQandignores(xr_vector<IGameObject*> objects, collide::rq_result rq)
+        {
+            ignore_objects = objects;
+            RQ = rq;
+        }
+    };
+    collide::rq_result GetPickResultVecIgnores(
+        Fvector pos, Fvector dir, float range, xr_vector<IGameObject*> ignore_objects = {});
+    collide::rq_result GetPickResult(Fvector pos, Fvector dir, float range, IGameObject* ignore = NULL);
+
 protected:
     // CFogOfWarMngr* m_pFogOfWarMngr;
     CMapManager* m_map_manager = nullptr;
