@@ -936,6 +936,7 @@
     <ClInclude Include="hit_memory_manager.h" />
     <ClInclude Include="hit_memory_manager_inline.h" />
     <ClInclude Include="holder_custom.h" />
+    <ClInclude Include="Hrebet.h" />
     <ClInclude Include="HUDCrosshair.h" />
     <ClInclude Include="HudItem.h" />
     <ClInclude Include="HUDManager.h" />
@@ -2560,6 +2561,7 @@
       <PrecompiledHeaderFile>pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="Hrebet.cpp" />
     <ClCompile Include="HUDCrosshair.cpp" />
     <ClCompile Include="HudItem.cpp" />
     <ClCompile Include="HUDManager.cpp" />

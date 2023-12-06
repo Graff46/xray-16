@@ -2254,6 +2254,9 @@
     <Filter Include="UI\Multiplayer\MM_MP\VersionList">
       <UniqueIdentifier>{04c90fd3-e247-4f21-b715-8dc556986837}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\vehicles\CustomVehicle">
+      <UniqueIdentifier>{2222f037-bfc8-4b4b-8b6d-5f6d8aeaadfd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6504,6 +6507,9 @@
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
+    <ClInclude Include="Hrebet.h">
+      <Filter>Core\Client\Objects\vehicles\CustomVehicle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9874,6 +9880,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIArtefactPanel.cpp">
       <Filter>UI\Common\MainIngame</Filter>
+    </ClCompile>
+    <ClCompile Include="Hrebet.cpp">
+      <Filter>Core\Client\Objects\vehicles\CustomVehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

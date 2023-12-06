@@ -29,6 +29,7 @@
 #include "CharacterPhysicsSupport.h"
 #include "car_memory.h"
 #include "xrPhysics/IPHWorld.h"
+#include "Hrebet.h"
 BONE_P_MAP CCar::bone_map = BONE_P_MAP();
 
 // extern CPHWorld*	ph_world;
@@ -90,6 +91,8 @@ CCar::CCar()
     m_car_weapon = NULL;
     m_power_neutral_factor = 0.25f;
     m_steer_angle = 0.f;
+
+    hrebet = nullptr;
 #ifdef DEBUG
     InitDebug();
 #endif
@@ -238,6 +241,10 @@ void CCar::SpawnInitPhysics(CSE_Abstract* D)
     CPHUpdateObject::Activate();
 
     m_pPhysicsShell->applyImpulse(Fvector().set(0.f, -1.f, 0.f), 0.1f);
+
+    CInifile* ini = K->LL_UserData();
+    if (ini->read_if_exists<bool>("car_definition", "hrebet", false))
+        hrebet = xr_new<Hrebet>(this, K);
 }
 
 void CCar::net_Destroy()
@@ -749,6 +756,7 @@ void CCar::ParseDefinitions()
 
     IKinematics* pKinematics = smart_cast<IKinematics*>(Visual());
     bone_map.insert(std::make_pair(pKinematics->LL_GetBoneRoot(), physicsBone()));
+    
     CInifile* ini = pKinematics->LL_UserData();
     R_ASSERT2(ini, "Car has no description !!! See ActorEditor Object - UserData");
     CExplosive::Load(ini, "explosion");
@@ -853,32 +861,23 @@ void CCar::ParseDefinitions()
 
 void CCar::CreateSkeleton(CSE_Abstract* po)
 {
-    if (!Visual())
-        return;
-    IRenderVisual* pVis = Visual();
-    IKinematics* pK = smart_cast<IKinematics*>(pVis);
-    IKinematicsAnimated* pKA = smart_cast<IKinematicsAnimated*>(pVis);
-    if (pKA)
-    {
-        pKA->PlayCycle("idle");
-        pK->CalculateBones(TRUE);
-    }
-    phys_shell_verify_object_model(*this);
-    /* Alundaio: p_build_shell
-    #pragma todo(" replace below by P_build_Shell or call inherited")
-    m_pPhysicsShell = P_create_Shell();
-    m_pPhysicsShell->build_FromKinematics(pK, &bone_map);
-    m_pPhysicsShell->set_PhysicsRefObject(this);
-    m_pPhysicsShell->mXFORM.set(XFORM());
-    m_pPhysicsShell->Activate(true);
-    m_pPhysicsShell->SetAirResistance(0.f, 0.f);
-    m_pPhysicsShell->SetPrefereExactIntegration();
-    */
-    m_pPhysicsShell = P_build_Shell(this, false, &bone_map);
-    //-Alundaio
+	if (!Visual()) return;
+	IRenderVisual *pVis = Visual();
+	IKinematics* pK = smart_cast<IKinematics*>(pVis);
+	IKinematicsAnimated* pKA = smart_cast<IKinematicsAnimated*>(pVis);
+	if(pKA)
+	{
+		pKA->PlayCycle		("idle");
+		pK->CalculateBones	(TRUE);
+	}
 
-    ApplySpawnIniToPhysicShell(&po->spawn_ini(), m_pPhysicsShell, false);
-    ApplySpawnIniToPhysicShell(pK->LL_UserData(), m_pPhysicsShell, false);
+	m_pPhysicsShell		= P_build_Shell(this, false, &bone_map);
+	m_pPhysicsShell->SetPrefereExactIntegration();
+	m_pPhysicsShell->Activate(true);
+	m_pPhysicsShell->applyForce({ 0.f, 0.f, 0.f }, 0.00001f);
+	ApplySpawnIniToPhysicShell(&po->spawn_ini(),m_pPhysicsShell,false);
+	ApplySpawnIniToPhysicShell(pK->LL_UserData(),m_pPhysicsShell,false);
+	pK->CalculateBones(TRUE);
 }
 
 void CCar::Init()
@@ -1731,6 +1730,11 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 void CCar::ResetScriptData(void* P) { CScriptEntity::ResetScriptData(P); }
 void CCar::PhDataUpdate(float step)
 {
+    m_pPhysicsShell->Enable();
+
+    if (hrebet)
+        hrebet->PhUpdate(step);
+
     if (m_repairing)
         Revert();
     LimitWheels();

@@ -37,6 +37,7 @@ struct dSurfaceParameters;
 
 class CScriptEntityAction;
 class car_memory;
+class Hrebet;
 
 class CCar : public CEntity,
              public CScriptEntity,
@@ -663,4 +664,7 @@ private:
     virtual CHolderCustom* cast_holder_custom() { return this; }
 private:
     car_memory* m_memory;
+
+public:
+    Hrebet* hrebet;
 };
