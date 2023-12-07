@@ -74,7 +74,8 @@ SCRIPT_EXPORT(cphysics_shell_scripted, (), {
                       .def("is_breaking_blocked", &cphysics_shell_scripted::IsBreakingBlocked)
                       .def("is_breakable", &cphysics_shell_scripted::isBreakable)
                       .def("get_linear_vel", &cphysics_shell_scripted::get_LinearVel)
-                      .def("get_angular_vel", &cphysics_shell_scripted::get_AngularVel)];
+                      .def("get_angular_vel", &cphysics_shell_scripted::get_AngularVel)
+                      .def("set_torque", (void (cphysics_shell_scripted::*)(Fvector))(&cphysics_shell_scripted::setTorque))];
 });
 
 /*
