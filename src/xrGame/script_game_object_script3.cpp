@@ -395,6 +395,7 @@ class_<CScriptGameObject>& script_register_game_object2(class_<CScriptGameObject
         .def("get_luminocity", &CScriptGameObject::GetLuminocity)
         .def("bone_visible", &CScriptGameObject::IsBoneVisible)
         .def("set_bone_visible", &CScriptGameObject::SetBoneVisible)
+        .def("detach_bone", &CScriptGameObject::detachBone)
         .def("set_health_ex", &CScriptGameObject::SetHealthEx) // AVO
         .def("force_set_position", &CScriptGameObject::ForceSetPosition)
         .def("set_spatial_type", &CScriptGameObject::SetSpatialType)

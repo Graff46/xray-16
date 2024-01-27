@@ -8,7 +8,9 @@ Hrebet::Hrebet(CCar* CLcar, IKinematics* K)
 
     world_gravity   = physics_world()->Gravity();
     total_mass      = car->m_pPhysicsShell->getMass();
-    total_torque    = total_mass * world_gravity;
+    total_torque    = total_mass + world_gravity;
+
+    b_shift = false;
 
     xr_vector<LPCSTR> boneVec = {
         "root.001",
@@ -62,8 +64,8 @@ void Hrebet::PhUpdate(float phStep)
 
             //hrebet.joint->SetAxisSDfactors(hrebet.saved_sf0, hrebet.saved_df0, 0);
 
-            bool b_shift = pInput->iGetAsyncKeyState(SDL_SCANCODE_RSHIFT) && !hrebet.i_am_locked;
-            bool b_rctrl = pInput->iGetAsyncKeyState(SDL_SCANCODE_RCTRL) && !hrebet.i_am_unlocked;
+            //bool b_shift = pInput->iGetAsyncKeyState(SDL_SCANCODE_RSHIFT) && !hrebet.i_am_locked;
+            bool b_rctrl = false;//pInput->iGetAsyncKeyState(SDL_SCANCODE_RCTRL) && !hrebet.i_am_unlocked;
 
             hrebet.joint->GetLimits(curr_lo_limit, curr_hi_limit, 0);
 
@@ -71,7 +73,7 @@ void Hrebet::PhUpdate(float phStep)
             clamp(curr_angle, hrebet.saved_lostop, hrebet.saved_histop);
 
             float angles_diff = angle_difference_signed(b_shift ? curr_lo_limit : 0.0f, curr_angle);
-            float target_vel = (angles_diff * total_mass * world_gravity * phStep);
+            float target_vel = (angles_diff * (total_mass + world_gravity) * phStep);
 
             if (!b_rctrl && !b_shift) // заблокировать в 0
             {
@@ -88,7 +90,7 @@ void Hrebet::PhUpdate(float phStep)
             if (b_rctrl && !hrebet.i_am_unlocked) // расправить
             {
                 hrebet.joint->SetLimits(hrebet.saved_lostop, hrebet.saved_histop, 0);
-                hrebet.joint->SetForceAndVelocity(total_torque, target_vel, 0);
+                hrebet.joint->SetForceAndVelocity(total_torque/50, target_vel/20, 0);
             }
             if (b_shift) // сжать
             {
@@ -101,7 +103,7 @@ void Hrebet::PhUpdate(float phStep)
                 else//пытаемся сжать
                 {
                     hrebet.joint->SetLimits(hrebet.saved_lostop, hrebet.saved_histop, 0);
-                    hrebet.joint->SetForceAndVelocity(total_torque, target_vel, 0);
+                    hrebet.joint->SetForceAndVelocity(total_torque, target_vel/2, 0);
                 }
             }
         }

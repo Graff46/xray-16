@@ -1437,6 +1437,17 @@ void CScriptGameObject::SetBoneVisible(pcstr bone_name, bool bVisibility, bool b
         k->LL_SetBoneVisible(bone_id, bVisibility, bRecursive);
 }
 
+void CScriptGameObject::detachBone(PCSTR bone_name) 
+{
+    CPhysicsShellHolder* ph_shell_holder = smart_cast<CPhysicsShellHolder*>(&object());
+    if (!ph_shell_holder)
+        return;
+
+    if (CPhysicsShell* ph = ph_shell_holder->PPhysicsShell())
+        if (CPhysicsJoint* pj = ph->get_Joint(bone_name))
+            pj->Deactivate();
+}
+
 bool CScriptGameObject::IsBoneVisible(pcstr bone_name)
 {
     IKinematics* k = object().Visual()->dcast_PKinematics();

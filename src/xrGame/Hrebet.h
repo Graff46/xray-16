@@ -7,6 +7,8 @@ public:
     Hrebet(CCar* CLcar, IKinematics* K);
     void PhUpdate(float phStep);
 
+    bool b_shift;
+
     struct SHrebet
     {
         u16 bone_id;

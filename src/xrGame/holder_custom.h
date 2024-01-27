@@ -10,10 +10,7 @@ class CHolderCustom
 private:
     CGameObject* m_owner;
     CActor* m_ownerActor;
-
-protected:
-    CGameObject* Owner() { return m_owner; }
-    CActor* OwnerActor() { return m_ownerActor; }
+    
 public:
     CHolderCustom()
     {
@@ -44,4 +41,7 @@ public:
     virtual void Action(u16 id, u32 flags){};
     virtual void SetParam(int id, Fvector2 val){};
     virtual void SetParam(int id, Fvector val){};
+
+    CGameObject* Owner() { return m_owner; }
+    CActor* OwnerActor() { return m_ownerActor; }
 };

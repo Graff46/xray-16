@@ -4,8 +4,14 @@
 #include "CarWeapon.h"
 #include "script_game_object.h"
 #include "xrScriptEngine/ScriptExporter.hpp"
+#include "Hrebet.h"
 
 using namespace luabind;
+
+bool OwnerActor(CCar* car)
+{
+    return !!car->OwnerActor();
+}
 
 SCRIPT_EXPORT(CCar, (CGameObject, CHolderCustom), {
     module(luaState)[class_<CCar, bases<CGameObject, CHolderCustom>>("CCar")
@@ -42,6 +48,10 @@ SCRIPT_EXPORT(CCar, (CGameObject, CHolderCustom), {
                          .def("StartEngine",		&CCar::StartEngine)
                          .def("StopEngine",		&CCar::StopEngine)
                          .def("IsActiveEngine",	&CCar::isActiveEngine)
+                         .def("detach_bone", +[](CCar* c, LPCSTR bn) { c->m_pPhysicsShell->get_Joint(bn)->Deactivate(); })
+                         .def("actor_owner", &OwnerActor)
+                         .def("IsEngineOn", +[](CCar* c) {return c->b_engine_on;})
+                         .def("hrebet_on", +[](CCar* c) {if (c->hrebet) c->hrebet->b_shift = true;})
                          /***** added by Ray Twitty (aka Shadows) END *****/
                          .def(constructor<>())];
 });

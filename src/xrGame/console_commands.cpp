@@ -506,36 +506,151 @@ public:
     }
 };
 
+
 class CCC_Spawn : public IConsole_Command
 {
 public:
-    CCC_Spawn(pcstr name) : IConsole_Command(name) {}
-
-    void Execute(pcstr args) override
+    CCC_Spawn(LPCSTR N) : IConsole_Command(N){};
+    virtual void Execute(LPCSTR args)
     {
         if (!g_pGameLevel)
             return;
-
-        if (!IsGameTypeSingle())
+        if (!Level().CurrentControlEntity())
+            return;
+        int count = 1;
+        string256 string;
+        string[0] = 0;
+        sscanf(args, "%s %d", &string, &count);
+        if (!pSettings->section_exist(string))
         {
-            Log("Spawn command is available only in singleplayer mode.");
+            Msg("! Section [%s] isn`t exist...", string);
             return;
         }
-
-        if (!pSettings->section_exist(args))
+        if (!pSettings->line_exist(string, "class"))
         {
-            InvalidSyntax();
+            Msg("!Failed to load section!");
             return;
         }
+        collide::rq_result RQ = Level().GetPickResult(
+            Device.vCameraPosition, Device.vCameraDirection, 1000.0f, Level().CurrentControlEntity());
+        if (game_sv_Single* tpGame = smart_cast<game_sv_Single*>(Level().Server->GetGameState()))
+            for (int i = 0; i < count; ++i)
+            {
+                CSE_Abstract* entity = tpGame->alife().spawn_item(string,
+                    Fvector(Device.vCameraPosition).add(Fvector(Device.vCameraDirection).mul(RQ.range)),
+                    Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(),
+                    ALife::_OBJECT_ID(-1));
 
-        Fvector pos = Actor()->Position();
-        Level().g_cl_Spawn(args, 0xff, M_SPAWN_OBJECT_LOCAL, pos);
+                Actor()->XFORM().getXYZ(entity->o_Angle);
+
+                if (CSE_ALifeHelicopter* heli = smart_cast<CSE_ALifeHelicopter*>(entity))
+                    heli->o_Position.y += 0.1f;
+
+                if (CSE_ALifeAnomalousZone* anom = smart_cast<CSE_ALifeAnomalousZone*>(entity))
+                {
+                    anom->o_Position.y += 1.f;
+                    CShapeData::shape_def _shape;
+                    _shape.data.sphere.P.set(0.0f, 0.0f, 0.0f);
+                    _shape.data.sphere.R = 5.0f;
+                    _shape.type = CShapeData::cfSphere;
+                    anom->assign_shapes(&_shape, 1);
+                    anom->m_space_restrictor_type = RestrictionSpace::eRestrictorTypeNone;
+                }
+            }
     }
-
-    void Info(TInfo& I) override
+    virtual void fill_tips(vecTips& tips, u32 mode)
     {
-        xr_strcpy(I, "valid name of entity or item that can be spawned");
+        CInifile::Root sections = pSettings->sections();
+        for (CInifile::Root::iterator i = sections.begin(), ie = sections.end(); i != ie; ++i)
+        {
+            if ((*i)->line_exist("class"))
+                tips.push_back((*i)->Name.c_str());
+        }
     }
+    virtual void Info(TInfo& I) { strcpy(I, "spawn_entities"); }
+};
+
+class CCC_Spawn_to_inventory : public IConsole_Command
+{
+public:
+    CCC_Spawn_to_inventory(LPCSTR N) : IConsole_Command(N){};
+    virtual void Execute(LPCSTR args)
+    {
+        if (!g_pGameLevel)
+            return;
+        if (!Level().CurrentControlEntity())
+            return;
+
+        int count = 0;
+        int target = 0;
+        string256 string;
+        string[0] = 0;
+        sscanf(args, "%s %d %d", &string, &count, &target);
+        if (count == 1)
+            target = 1;
+        if (count <= 0)
+            count = 1;
+
+        if (!pSettings->section_exist(string))
+        {
+            Msg("! Section [%s] isn`t exist...", string);
+            return;
+        }
+
+        if (!pSettings->line_exist(string, "class") || !pSettings->line_exist(string, "inv_weight") ||
+            !pSettings->line_exist(string, "visual"))
+        {
+            Msg("!Failed to load section!");
+            return;
+        }
+
+        for (int i = 0; i < count; ++i)
+        {
+            if (target == 1)
+            {
+                collide::rq_result RQ = Level().GetPickResult(
+                    Device.vCameraPosition, Device.vCameraDirection, 1000.0f, Level().CurrentControlEntity());
+                if (RQ.element >= 0 && RQ.O)
+                {
+                    if (CGameObject* pGo = smart_cast<CGameObject*>(RQ.O))
+                        Level().spawn_item(string, pGo->Position(), pGo->ai_location().level_vertex_id(), pGo->ID());
+                }
+            }
+            else if (target > 1)
+            {
+                u32 CLObjNum = Level().Objects.o_count();
+                for (u32 io = 0; io < CLObjNum; io++)
+                {
+                    IGameObject* pObj = Level().Objects.o_get_by_iterator(io);
+                    if (pObj && !pObj->getDestroy())
+                    {
+                        if (CAI_Stalker* pStalk = smart_cast<CAI_Stalker*>(smart_cast<CGameObject*>(pObj)))
+                        {
+                            if (pStalk->g_Alive())
+                                Level().spawn_item(
+                                    string, pStalk->Position(), pStalk->ai_location().level_vertex_id(), pStalk->ID());
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Actor())
+                    Level().spawn_item(
+                        string, Actor()->Position(), Actor()->ai_location().level_vertex_id(), Actor()->ID());
+            }
+        }
+    }
+    virtual void fill_tips(vecTips& tips, u32 mode)
+    {
+        CInifile::Root sections = pSettings->sections();
+        for (CInifile::Root::iterator i = sections.begin(), ie = sections.end(); i != ie; ++i)
+        {
+            if ((*i)->line_exist("class") && (*i)->line_exist("inv_weight"))
+                tips.push_back((*i)->Name.c_str());
+        }
+    }
+    virtual void Info(TInfo& I) { strcpy(I, "name,team,squad,group"); }
 };
 
 // helper functions --------------------------------------------
@@ -1244,7 +1359,7 @@ public:
 */
 #endif
 
-#ifndef MASTER_GOLD
+//#ifndef MASTER_GOLD
 #include "xrAICore/Navigation/game_graph.h"
 struct CCC_JumpToLevel : public IConsole_Command
 {
@@ -1385,7 +1500,7 @@ public:
     }
 };
 
-#endif // MASTER_GOLD
+//#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
 
@@ -2075,18 +2190,19 @@ void CCC_RegisterCommands()
     CMD4(CCC_Integer, "ph_tri_clear_disable_count", &ph_console::ph_tri_clear_disable_count, 0, 255);
     CMD4(CCC_FloatBlock, "ph_tri_query_ex_aabb_rate", &ph_console::ph_tri_query_ex_aabb_rate, 1.01f, 3.f);
     CMD3(CCC_Mask, "g_no_clip", &psActorFlags, AF_NO_CLIP);
-    CMD1(CCC_SetWeather, "set_weather");
 #endif // DEBUG
 
-#ifndef MASTER_GOLD
+//#ifndef MASTER_GOLD
     CMD1(CCC_JumpToLevel, "jump_to_level");
     CMD3(CCC_Mask, "g_god", &psActorFlags, AF_GODMODE);
     CMD3(CCC_Mask, "g_unlimitedammo", &psActorFlags, AF_UNLIMITEDAMMO);
     CMD1(CCC_Spawn, "g_spawn");
+    CMD1(CCC_Spawn_to_inventory, "g_spawn_to_inventory");
     CMD1(CCC_Script, "run_script");
     CMD1(CCC_ScriptCommand, "run_string");
     CMD1(CCC_TimeFactor, "time_factor");
-#endif // MASTER_GOLD
+    CMD1(CCC_SetWeather, "set_weather");
+//#endif // MASTER_GOLD
 
     CMD3(CCC_Mask, "g_autopickup", &psActorFlags, AF_AUTOPICKUP);
     CMD3(CCC_Mask, "g_dynamic_music", &psActorFlags, AF_DYNAMIC_MUSIC);

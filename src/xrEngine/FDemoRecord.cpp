@@ -423,7 +423,7 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
     if (dik == SDL_SCANCODE_ESCAPE)
         fLifeTime = -1;
 
-#ifndef MASTER_GOLD
+//#ifndef MASTER_GOLD
     if (dik == SDL_SCANCODE_RETURN)
     {
         IGameObject* entity = g_pGameLevel->CurrentEntity();
@@ -433,7 +433,7 @@ void CDemoRecord::IR_OnKeyboardPress(int dik)
             fLifeTime = -1;
         }
     }
-#endif
+//#endif
 
     if (dik == SDL_SCANCODE_PAUSE)
         Device.Pause(!Device.Paused(), true, true, "demo_record");

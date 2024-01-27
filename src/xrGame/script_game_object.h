@@ -844,6 +844,7 @@ public:
     //Works for anything with visual
     bool IsBoneVisible(pcstr bone_name);
     void SetBoneVisible(pcstr bone_name, bool bVisibility, bool bRecursive = true);
+    void detachBone(pcstr bone_name);
 
     //Anything with PPhysicShell (ie. car, actor, stalker, monster, heli)
     void ForceSetPosition(Fvector pos, bool bActivate = false);

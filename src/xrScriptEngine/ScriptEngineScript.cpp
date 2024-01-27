@@ -135,6 +135,11 @@ inline profile_timer_script operator+(const profile_timer_script& portion0, cons
     return result;
 }
 
+void toLog(LPCSTR str)
+{
+    Log(str);
+}
+
 std::ostream& operator<<(std::ostream& os, const profile_timer_script& pt) { return os << pt.time(); }
 SCRIPT_EXPORT(CScriptEngine, (),
 {
@@ -152,6 +157,7 @@ SCRIPT_EXPORT(CScriptEngine, (),
             .def("time", &profile_timer_script::time),
 
         def("log", &LuaLog),
+        def("log1", &toLog),
         def("error_log", &ErrorLog),
         def("flush", &FlushLogs),
         def("print_stack", &PrintStack),
