@@ -274,7 +274,7 @@ public:
             _vector2<int> door_plane_axes;
             SDoor* door;
             SDoorway();
-            void SPass();
+            //void SPass();
             void Init(SDoor* adoor);
             void Trace(const Fvector& point, const Fvector& dir);
         };

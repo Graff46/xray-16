@@ -41,7 +41,6 @@ public:
     virtual IFactoryObject* _construct();
     virtual bool net_Spawn(CSE_Abstract* DC);
     virtual void net_Destroy();
-    void Init();
     virtual void Load(LPCSTR section);
     virtual void reinit();
     virtual void reload(LPCSTR section);
@@ -226,6 +225,7 @@ private:
     bool m_need_osoznanie_mode;
     bool m_deadbody_can_take;
     bool m_deadbody_closed;
+    bool is_mechanic;
 
 public:
     IC CTradeParameters& trade_parameters() const;

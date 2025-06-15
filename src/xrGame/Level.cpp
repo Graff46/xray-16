@@ -1087,8 +1087,7 @@ CZoneList* CLevel::create_hud_zones_list()
     return hud_zones_list;
 }
 
-#include "car.h"
-#include "../xrEngine/GameMtlLib.h"
+#include "../xrMaterialSystem/GameMtlLib.h"
 #include "../xrEngine/IGame_Persistent.h"
 #include "Grenade.h"
 #include "CustomRocket.h"

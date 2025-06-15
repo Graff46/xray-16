@@ -92,7 +92,7 @@ void CUIXmlInitBase::setPosAndSize(CUIXml& xml_doc, CUIWindow* pWnd, LPCSTR path
     }
 }
 
-bool CUIXmlInitBase::InitWindow(CUIXml& xml_doc, LPCSTR path, int index, CUIWindow* pWnd, bool fatal /*= true*/)
+bool CUIXmlInitBase::InitWindow(CUIXml& xml_doc, pcstr path, int index, CUIWindow* pWnd, bool fatal /*= true*/)
 {
     const bool nodeExist = xml_doc.NavigateToNode(path, index);
     if (!nodeExist)
@@ -1236,7 +1236,7 @@ bool CUIXmlInitBase::InitListWnd(const CUIXml& xml_doc, pcstr path, int index, C
     size.x = xml_doc.ReadAttribFlt(path, index, "width");
     size.y = xml_doc.ReadAttribFlt(path, index, "height");*/
     Fvector2 pos, size;
-    setPosAndSize(xml_doc, pWnd, path, index, &pos, &size);
+    setPosAndSize((CUIXml&)xml_doc, pWnd, path, index, &pos, &size);
 
     float item_height = xml_doc.ReadAttribFlt(path, index, "item_height");
     int active_background = xml_doc.ReadAttribInt(path, index, "active_bg");

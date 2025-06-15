@@ -39,24 +39,22 @@ public:
     CUIXmlInitBase();
     virtual ~CUIXmlInitBase() = default;
 
-    static bool InitWindow(CUIXml& xml_doc, LPCSTR path, int index, CUIWindow* pWnd, bool fatal = true);
-    static void setPosAndSize(CUIXml& xml_doc, CUIWindow* pWnd, LPCSTR path, int index, Fvector2* apos = nullptr, Fvector2* asize = nullptr); 
-    static bool InitFrameWindow(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameWindow* pWnd, bool fatal = true);
-    static bool InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameLineWnd* pWnd, bool fatal = true);
-    static bool InitTextFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUITextFrameLineWnd* pWnd, bool fatal = true);
-    static bool InitCustomEdit(CUIXml& xml_doc, LPCSTR paht, int index, CUICustomEdit* pWnd, bool fatal = true);
-    static bool InitEditBox(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBox* pWnd, bool fatal = true);
-    static bool InitStatic(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd, bool fatal = true);
-    static bool InitTextWnd(CUIXml& xml_doc, LPCSTR path, int index, CUITextWnd* pWnd, bool fatal = true);
-    static bool InitCheck(CUIXml& xml_doc, LPCSTR path, int index, CUICheckButton* pWnd, bool fatal = true);
-    static bool InitSpin(CUIXml& xml_doc, LPCSTR path, int index, CUICustomSpin* pWnd, bool fatal = true);
-    static bool InitText(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
-    static bool InitText(CUIXml& xml_doc, LPCSTR path, int index, CUILines* pLines);
-    static bool Init3tButton(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButton* pWnd, bool fatal = true);
-    static bool InitProgressBar(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressBar* pWnd, bool fatal = true);
-    static bool InitProgressShape(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressShape* pWnd, bool fatal = true);
-    static bool InitFont(CUIXml& xml_doc, LPCSTR path, int index, u32& color, CGameFont*& pFnt);
-    static bool InitTabControl(CUIXml& xml_doc, LPCSTR path,
+    static bool InitWindow(CUIXml& xml_doc, pcstr path, int index, CUIWindow* pWnd, bool fatal = true);
+    static void setPosAndSize(CUIXml& xml_doc, CUIWindow* pWnd, LPCSTR path, int index, Fvector2* apos = nullptr, Fvector2* asize = nullptr);
+    static bool InitFrameWindow(CUIXml& xml_doc, pcstr path, int index, CUIFrameWindow* pWnd, bool fatal = true);
+    static bool InitFrameLine(CUIXml& xml_doc, pcstr path, int index, CUIFrameLineWnd* pWnd, bool fatal = true);
+    static bool InitTextFrameLine(CUIXml& xml_doc, pcstr path, int index, CUITextFrameLineWnd* pWnd, bool fatal = true);
+    static bool InitCustomEdit(CUIXml& xml_doc, pcstr paht, int index, CUICustomEdit* pWnd, bool fatal = true);
+    static bool InitEditBox(CUIXml& xml_doc, pcstr paht, int index, CUIEditBox* pWnd, bool fatal = true);
+    static bool InitStatic(CUIXml& xml_doc, pcstr path, int index, CUIStatic* pWnd, bool fatal = true, bool textWnd = false);
+    static bool InitCheck(CUIXml& xml_doc, pcstr path, int index, CUICheckButton* pWnd, bool fatal = true);
+    static bool InitSpin(CUIXml& xml_doc, pcstr path, int index, CUICustomSpin* pWnd, bool fatal = true);
+    static bool InitText(CUIXml& xml_doc, pcstr path, int index, CUILines* pLines);
+    static bool Init3tButton(CUIXml& xml_doc, pcstr path, int index, CUI3tButton* pWnd, bool fatal = true);
+    static bool InitProgressBar(CUIXml& xml_doc, pcstr path, int index, CUIProgressBar* pWnd, bool fatal = true);
+    static bool InitProgressShape(CUIXml& xml_doc, pcstr path, int index, CUIProgressShape* pWnd, bool fatal = true);
+    static bool InitFont(const CUIXml& xml_doc, pcstr path, int index, u32& color, CGameFont*& pFnt);
+    static bool InitTabControl(CUIXml& xml_doc, pcstr path,
         int index, CUITabControl* pWnd, bool fatal = true, bool defaultIdsAllowed = false);
     static bool InitAnimatedStatic(CUIXml& xml_doc, pcstr path, int index, CUIAnimatedStatic* pWnd, bool fatal = true);
     static bool InitTextureOffset(const CUIXml& xml_doc, pcstr path, int index, CUIStatic* pWnd);

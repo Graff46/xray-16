@@ -1232,9 +1232,6 @@ void CCustomZone::OnMove()
             // Check ID, just in case...
             if (g_pGamePersistent->grass_shader_data.id[grassbender_id] == ID())
                 g_pGamePersistent->grass_shader_data.pos[grassbender_id] = Position();
-            
-            if (light_ambient)
-                light_ambient->set_position(Position());
         }
     }
 }
